@@ -43,10 +43,19 @@ int[] letterend = int( wordend.toCharArray() );
 int[] firstletterx = new int[letterstart.length];
 int[] firstlettery = new int[letterstart.length];
 
-// First of last is "s" in "second"
-int[] lastletterx = new int[letterend.length];
-int[] lastlettery = new int[letterend.length];
+/*
+int[] followuprows_sx = new int[letterstart.length*increment];
+int[] followuprows_sy = new int[letterstart.length*increment];
+*/
 
+// First of last is "s" in "second"
+int[] lastletterx = new int[letterend.length*increment];
+int[] lastlettery = new int[letterend.length*increment];
+
+/*
+int[] followuprows_ex = new int[letterstart.length*increment];
+int[] followuprows_ey = new int[letterstart.length*increment];
+*/
 
 int row = 0;
 int rowdebug = 4;
@@ -57,14 +66,6 @@ boolean saved = false;
 void setup() {
   img = loadImage(imgFileName+"."+fileType);
   println("Length1",letterstart.length,"Length2",letterend.length);
-  
-  /* create arrays to store X and Y coordinates
-  int[] xaxis = new int[img.width];
-  int[] yaxis = new int[img.height];
-  
-   for (int xa = 0; xa < xaxis.length; xa = xa+1) {
-     xaxis[xa] = xa;
-    } */
   
   // use only numbers (not variables) for the size() command, Processing 3
   size(1, 1);
@@ -80,15 +81,6 @@ void setup() {
 }
 
 void draw() {
-    /*
-      // loop through rows
-      while(row < img.height-1) {
-        if(row < rowdebug){println("############################# Sorting Row " + row);};
-        img.loadPixels(); 
-        sortRow();
-        row++;
-        img.updatePixels();
-      } // Endwhile */
 
       /* Loop through each letter pair and get XY */
       for(int l = 0; l < firstletterx.length; l = l+1) {
@@ -96,7 +88,7 @@ void draw() {
       char d = char(letterend[l]); 
       println("----------------------- Sorting for letter pair "+c+" and "+d+"----------");
 
-        // ROUND((((code(B7)-code("a"))+1)/26)*$H$56)
+      // ROUND((((code(B7)-code("a"))+1)/26)*$H$56)
       int startcharindex = (letterstart[l] - alphaindex[1])+1;
           println("char index is: ",startcharindex);
       float divider = 26.0;    
@@ -116,10 +108,17 @@ void draw() {
           println("X sort postion end for ("+d+") is: ",charendx);
           println("Y sort postion end for ("+d+") is: ",charendy);
           
-        img.loadPixels(); 
-        println("Calliing sortrow with ",charstartx,charstarty,charendx,charendy);
-        sortRow(charstartx,charstarty,charendx,charendy);
-        img.updatePixels();
+          for(int r = 0; r < increment; r = r+1) {
+            img.loadPixels(); 
+            //if(charendx > img.width-1) {charendx = img.width-1;};
+            println("Calliing sortrow with ",charstartx,charstarty,charendx,charendy);
+            sortRow(charstartx,charstarty,charendx,charendy);
+            img.updatePixels();
+            if(charstarty > img.height-1) {charstarty = img.height-1;} else {charstarty = charstarty + 1;};
+            if(charendy > img.height-1) {charendy = img.height-1;} else {charendy = charendy + 1;};
+            
+            // charendx = charendx - int(random(increment));
+          }
           
       } //endfor
 
